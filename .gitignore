@@ -4,8 +4,9 @@
 # ignore any lists of people
 /*students*.txt
 
-# ignore data directory
+# ignore data directory and student repos
 /data/
+/students/
 
 # files
 .cs251toolkitrc.yaml
