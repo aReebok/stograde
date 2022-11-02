@@ -6,6 +6,7 @@ import sys
 from ..common import chdir, run
 from ..common.run_status import RunStatus
 from ..specs.spec_repos import get_course_from_spec_url, default_course
+from .. import stogit_url
 
 COURSE_REGEX = re.compile(r'^([\w]{2,3}/[sf]\d\d)$')
 
@@ -18,13 +19,13 @@ def compute_stogit_url(*,
     if stogit:
         return stogit
     elif re.match(COURSE_REGEX, course):
-        return 'git@stogit.cs.stolaf.edu:{}'.format(course)
+        return 'git@{}:{}'.format(stogit_url.URL, course)
     else:
         if not course:
             course = get_course_from_specs()
         semester = 's' if _now.month < 7 else 'f'
         year = str(_now.year)[2:]
-        return 'git@stogit.cs.stolaf.edu:{}/{}{}'.format(course.lower(), semester, year)
+        return 'git@{}:{}/{}{}'.format(stogit_url.URL, course.lower(), semester, year)
 
 
 def get_course_from_specs() -> str:

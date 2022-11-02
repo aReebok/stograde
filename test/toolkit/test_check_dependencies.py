@@ -7,7 +7,7 @@ from unittest import mock
 from stograde.common import run
 from stograde.toolkit.check_dependencies import check_git_installed, is_stogit_known_host, check_stogit_known_host, \
     check_dependencies
-
+from .. import stogit_url
 
 @contextlib.contextmanager
 def stogit_as_known_host():
@@ -15,14 +15,14 @@ def stogit_as_known_host():
 
     try:
         if modify_known_hosts:
-            _, out, _ = run(['ssh-keyscan', 'stogit.cs.stolaf.edu'])
+            _, out, _ = run(['ssh-keyscan', stogit_url.URL])
             with (Path.home() / '.ssh' / 'known_hosts').open('a') as known_hosts:
                 known_hosts.write(out)
                 known_hosts.close()
         yield
     finally:
         if modify_known_hosts:
-            run(['ssh-keygen', '-R', 'stogit.cs.stolaf.edu'])
+            run(['ssh-keygen', '-R', stogit_url.URL])
 
 
 @contextlib.contextmanager
@@ -31,11 +31,11 @@ def stogit_not_as_known_host():
 
     try:
         if modify_known_hosts:
-            run(['ssh-keygen', '-R', 'stogit.cs.stolaf.edu'])
+            run(['ssh-keygen', '-R', stogit_url.URL])
         yield
     finally:
         if modify_known_hosts:
-            _, out, _ = run(['ssh-keyscan', 'stogit.cs.stolaf.edu'])
+            _, out, _ = run(['ssh-keyscan', stogit_url.URL])
             with (Path.home() / '.ssh' / 'known_hosts').open('a') as known_hosts:
                 known_hosts.write(out)
                 known_hosts.close()
@@ -64,8 +64,8 @@ def test_check_stogit_known_host_failing(capsys):
             pass
 
     _, err = capsys.readouterr()
-    assert err == ('stogit.cs.stolaf.edu not in known hosts\n'
-                   'Run "ssh-keyscan stogit.cs.stolaf.edu >> ~/.ssh/known_hosts" to fix\n')
+    assert err == (stogit_url.URL + ' not in known hosts\n'
+                   'Run "ssh-keyscan ' + stogit_url.URL + ' >> ~/.ssh/known_hosts" to fix\n')
 
 
 def test_check_git_installed_failing(capsys):

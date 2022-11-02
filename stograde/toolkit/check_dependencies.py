@@ -2,6 +2,7 @@ import sys
 
 from ..common import run
 from ..common.run_status import RunStatus
+from .. import stogit_url
 
 
 def check_dependencies():
@@ -10,7 +11,7 @@ def check_dependencies():
 
 
 def is_stogit_known_host():
-    status, output, _ = run(['ssh-keygen', '-F', 'stogit.cs.stolaf.edu'])
+    status, output, _ = run(['ssh-keygen', '-F', stogit_url.URL])
     if status is RunStatus.SUCCESS:
         return True
     return False
@@ -18,8 +19,8 @@ def is_stogit_known_host():
 
 def check_stogit_known_host():
     if not is_stogit_known_host():
-        print('stogit.cs.stolaf.edu not in known hosts', file=sys.stderr)
-        print('Run "ssh-keyscan stogit.cs.stolaf.edu >> ~/.ssh/known_hosts" to fix', file=sys.stderr)
+        print(stogit_url.URL + ' not in known hosts', file=sys.stderr)
+        print('Run "ssh-keyscan '+ stogit_url.URL + ' >> ~/.ssh/known_hosts" to fix', file=sys.stderr)
         sys.exit(1)
 
 

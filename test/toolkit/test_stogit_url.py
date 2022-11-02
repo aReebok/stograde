@@ -4,6 +4,7 @@ import os
 from stograde.common import chdir
 from stograde.toolkit.stogit_url import compute_stogit_url, get_course_from_specs
 from test.utils import git
+from .. import stogit_url
 
 
 def test_compute_stogit_url_infer_course(tmpdir, capsys):
@@ -14,7 +15,7 @@ def test_compute_stogit_url_infer_course(tmpdir, capsys):
             git('remote', 'add', 'origin', 'https://github.com/stograde/cs251-specs.git')
         assert compute_stogit_url(stogit='',
                                   course='',
-                                  _now=datetime.date(2020, 4, 16)) == 'git@stogit.cs.stolaf.edu:sd/s20'
+                                  _now=datetime.date(2020, 4, 16)) == 'git@' + stogit_url.URL + ':sd/s20'
 
     _, err = capsys.readouterr()
 
@@ -24,13 +25,13 @@ def test_compute_stogit_url_infer_course(tmpdir, capsys):
 def test_compute_stogit_url_course_date_spring():
     assert compute_stogit_url(stogit='',
                               course='sd',
-                              _now=datetime.date(2017, 1, 31)) == 'git@stogit.cs.stolaf.edu:sd/s17'
+                              _now=datetime.date(2017, 1, 31)) == 'git@' + stogit_url.URL + ':sd/s17'
 
 
 def test_compute_stogit_url_course_date_fall():
     assert compute_stogit_url(stogit='',
                               course='hd',
-                              _now=datetime.date(2016, 9, 15)) == 'git@stogit.cs.stolaf.edu:hd/f16'
+                              _now=datetime.date(2016, 9, 15)) == 'git@' + stogit_url.URL + ':hd/f16'
 
 
 def test_compute_stogit_url_stogit_set():
@@ -40,7 +41,7 @@ def test_compute_stogit_url_stogit_set():
 
 def test_compute_stogit_url_course_with_semester():
     assert compute_stogit_url(stogit='',
-                              course='hd/f19') == 'git@stogit.cs.stolaf.edu:hd/f19'
+                              course='hd/f19') == 'git@' + stogit_url.URL + ':hd/f19'
 
 
 def test_get_course_from_specs_sd(tmpdir):

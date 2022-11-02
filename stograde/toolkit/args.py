@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Tuple
 
 from natsort import natsorted
 
-from . import global_vars
+from .. import stogit_url
 from .get_students import get_students
 from .subcommands import do_ci, do_drive, do_record, do_repo_clean, do_repo_update, do_table, do_web
 from ..common import version
@@ -50,7 +50,7 @@ def build_argparser():
                                      'Can be {} or one of the previous with /f## or /s## (i.e. sd/s19)'
                                 .format(format_supported_course_list(delimiter=', ')))
     repo_selection.add_argument('--stogit', metavar='URL',
-                                help='Use an alternate stogit base URL (eg, git@stogit.cs.stolaf.edu:sd/s17)')
+                                help='Use an alternate stogit base URL (eg, git@' + stogit_url.URL + ':sd/s17)')
 
     # Recording options
     record_options = argparse.ArgumentParser(add_help=False)
@@ -173,8 +173,8 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
         print('version', version)
         sys.exit(0)
 
-    global_vars.DEBUG = args.get('debug', False)
-    logging.basicConfig(level=logging.DEBUG if global_vars.DEBUG else logging.WARNING)
+    stogit_url.DEBUG = args.get('debug', False)
+    logging.basicConfig(level=logging.DEBUG if stogit_url.DEBUG else logging.WARNING)
 
     command: str = args['command']
 
@@ -186,7 +186,7 @@ def process_args() -> Tuple[Dict[str, Any], List[str], List[str]]:
         assignments = get_ci_assignments()
         students = [os.environ['CI_PROJECT_NAME']]
         args['course'] = os.environ['CI_PROJECT_NAMESPACE']
-        global_vars.CI = True
+        stogit_url.CI = True
 
     elif command == 'drive':
         if not args['assignments'] and not args['regex']:
